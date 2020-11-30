@@ -1,6 +1,9 @@
 /*
 
-
+  Nombre:Picuasi Edison
+  Materia: Sistemas Embebidos
+  DEBER 4 
+  Objetivo:
   Realice un sistema que codifique las vocales en palabras
   ingresadas por comunicación serial.
   Este mensaje se ingresa por comunicación serial en el
