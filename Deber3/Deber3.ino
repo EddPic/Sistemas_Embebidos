@@ -2,7 +2,9 @@
 
   Nombre: Picuasi Edison
   Materia: Sistemas Embebidos
+  DEBER 3
 
+  Objetivo:
   Realizar un programa de juego de preguntas. Se debe tener mínimo 8 preguntas que deben observarse en orden aleatorio.
   La forma de visualización es por medio de comunicación serial.
   Su respuesta solo debe ser "SI" y "NO" ingresadas de la misma forma por comunicación serial.
@@ -24,7 +26,7 @@ String cadena_leida;
 void setup() {
   lcd.begin(16, 2);
   Serial.begin(9600);
-  Serial.println("Presione cualquier tecla para iniciar el cuestionario");
+  Serial.println("Ingrese SI para iniciar el cuestionario");
   randomSeed(2);
 }
 
