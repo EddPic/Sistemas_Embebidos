@@ -12,6 +12,7 @@
 */
 
 #include <avr/sleep.h>  //importar libreria sleep
+#include <avr/wdt.h>  //importar libreria WatchDog
 #include <MsTimer2.h> //importar libreria Timer 2
 int segundos = 0; //variable de conteo
 int cad = 0;  //variable del CAD
@@ -40,7 +41,9 @@ void tiempo() {
   if (segundos < 59) {  
     segundos++; //incrementa la variable
     Serial.println(segundos); //imprime el mensaje
+    wdt_disable();  //Desactiva WatchDog
   } else {
+    wdt_enable(WDTO_15MS);  //habilita WatchDog
     segundos = 0; //reinicia la Variable
     Serial.println(segundos); //imprime el mensaje
   }
