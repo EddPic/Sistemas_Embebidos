@@ -10,11 +10,13 @@ Minim postura3;
 Minim postura4;
 Serial port;
 int dato;
-int dato2=1;
+int p=0;
+//int dato2=3;
 void setup() {
   size(1000, 600);
   background(255);
 
+   port=new Serial(this, "COM10", 9600);
   cp5=new ControlP5(this);
   img1=loadImage("Posture1.png");
   img2=loadImage("Posture2.png");
@@ -40,6 +42,7 @@ void draw() {
   text("SISTEMAS EMBEBIDOS", 50, 50);
   text("PROYECTO", 50, 80);
   text("Picuasi Edison", 50, 120);
+  
   switch(dato) {
   case 1:
 
@@ -71,13 +74,16 @@ void draw() {
     image(img4, 700, 300, 400, 400);
     break;
   }
+  
 }
 
 public void Abrir() {
-  // port=new Serial(this, "COM10", 9600);
+  //dato=port.read();
+  print(dato);
+  p=1;
 }
 
 void serialEvent(Serial port) {
-  background(0);
+  p=0;
   dato=port.read();
 }
