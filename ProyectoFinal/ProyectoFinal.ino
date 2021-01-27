@@ -19,7 +19,8 @@ float raiz;
 float etiqueta;
 String tipo = "";
 float dist_menor = 2500; //agregar una valor mayor fuera del rango
-float datos_prueba [5] = {575,121,247,11,3};
+float datos_prueba [5] =
+{621,422,0,31,2};
 /////////////////////////////////
 /*      VARIABLES SENSORES     */
 uint16_t cad1;
@@ -41,7 +42,7 @@ const float fs = 0.5;
 //int16_t sensor2[muestras] = {0};
 //int16_t sensor3[muestras] = {0};
 //int16_t sensor4[muestras] = {0};
-const uint16_t tam = 3;
+const uint16_t tam = 4;
 uint16_t dato[tam] = {0};
 uint16_t datofil[tam] = {0};
 ///////////////////////////////////
@@ -49,6 +50,8 @@ uint16_t datofil[tam] = {0};
 int segundos = 0;
 void setup() {
 
+  attachInterrupt(digitalPinToInterrupt(20), modos, FALLING);     //configura interrupcion 1
+  attachInterrupt(digitalPinToInterrupt(21), lectura, FALLING);     //configura interrupcion 1
   
   pinMode(rxPin, INPUT);  //configura pin
   pinMode(txPin, OUTPUT); //configura pin
@@ -156,7 +159,7 @@ void loop() {
   //    set_sleep_mode(SLEEP_MODE_ADC); //configura el modo sleep
   //    sleep_enable();   //habilita el modo sleep
   //  }
-  knn();
+  //knn();
 }
 
 
@@ -206,10 +209,61 @@ void knn() {
   Serial.println(tipo);
   if (etiqueta == datos_prueba[4]) {
     Serial.println("ASIGNACION CORRECTA");
-    mySerial.write((int)etiqueta);
+    Serial.write((int)etiqueta);
   } else {
 
     Serial.println("ASIGNACION INCORRECTA");
   }
 
 }
+
+void modos(){
+    knn();
+  
+  }
+
+
+  void lectura(){
+    
+    /*      LECTURA SENSORES DE PRESION      */
+      cad1 = analogRead(A0);
+      //EEPROM.update(0, cad1/4);
+      dato[0]=cad1;
+      Serial.println("Sensor 1: " + String(cad1));
+  
+      delay(250);
+      cad2 = analogRead(A1);
+  
+      dato[1]=cad2;
+      //EEPROM.update(1, cad2/4);
+      Serial.println("Sensor 2: " + String(cad2));
+  
+      delay(250);
+      cad3 = analogRead(A2);
+      dato[2]=cad3;
+      //EEPROM.update(2, cad3/4);
+      Serial.println("Sensor 3: " + String(cad3));
+  
+      ///////////////////////////////////////////
+      /*      LECTURA SENSOR ULTRASONICO      */
+      delay(250);
+      digitalWrite(Trig, LOW);
+      delayMicroseconds(2);
+      digitalWrite(Trig, HIGH);   // genera el pulso de triger por 10ms
+      delayMicroseconds(10);
+      digitalWrite(Trig, LOW);
+      duracion = pulseIn(Echo, HIGH);
+      distancia = duracion * 0.0343 / 2;
+      uint16_t conversion = map(distancia,0,1023,0,30);
+  
+      dato[3]=conversion;
+      //EEPROM.update(3, conversion/4);
+      Serial.println("Sensor 4:"+String(conversion) + "cm");
+      delay(250);
+    KickFilters<int16_t>::lowpass(dato, datofil, tam, 1, fs);
+    for(int k=0;k<tam;k++){
+      Serial.println("Filtrado S"+String(k+1)+": "+String(datofil[k]));
+      analogWrite(24,dato[k]);
+      analogWrite(25,datofil[k]);
+      }
+    }
